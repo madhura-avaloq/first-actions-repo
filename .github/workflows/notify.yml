@@ -36,19 +36,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Send Email notification
         run: |
           # Set status to success directly
           STATUS="success"
-
-      # - name: Send Email notification
-      #   run: |
-      #     # Determine the status of the previous job (`java-build`)
-      #     if [[ "${{ needs.java-build.result }}" == 'success' ]]; then
-      #       STATUS="success"
-      #     else
-      #       STATUS="failure"
-      #     fi
 
           # Define the subject and body of the email based on the status
           SUBJECT="GitHub Workflow Status: $STATUS"
@@ -58,7 +50,7 @@ jobs:
             MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
           fi
 
-          # Send email using SMTP (Gmail) 
+          # Send email using SMTP (Gmail)
           curl --url "smtp://smtp.gmail.com:587" \
             --ssl-reqd \
             --mail-from "${{ secrets.SMTP_USERNAME }}" \
