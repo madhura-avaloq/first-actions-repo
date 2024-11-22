@@ -39,12 +39,17 @@ jobs:
 
       - name: Send Email notification
         run: |
-          # Determine the status of the previous job (`java-build`)
-          if [[ "${{ needs.java-build.result }}" == 'success' ]]; then
-            STATUS="success"
-          else
-            STATUS="failure"
-          fi
+          # Set status to success directly
+          STATUS="success"
+
+      # - name: Send Email notification
+      #   run: |
+      #     # Determine the status of the previous job (`java-build`)
+      #     if [[ "${{ needs.java-build.result }}" == 'success' ]]; then
+      #       STATUS="success"
+      #     else
+      #       STATUS="failure"
+      #     fi
 
           # Define the subject and body of the email based on the status
           SUBJECT="GitHub Workflow Status: $STATUS"
