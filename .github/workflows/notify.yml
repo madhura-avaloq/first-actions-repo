@@ -54,7 +54,7 @@ jobs:
             MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
           fi
 
-          # Send email using SMTP (Gmail)
+          # Send email using SMTP (Gmail) 
           curl --url "smtp://smtp.gmail.com:587" \
             --ssl-reqd \
             --mail-from "${{ secrets.SMTP_USERNAME }}" \
