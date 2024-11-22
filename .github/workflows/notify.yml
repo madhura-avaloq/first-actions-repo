@@ -10,16 +10,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Optionally, set up JDK, compile and run the Java program here if necessary
       # - name: Set up JDK 11
       #   uses: actions/setup-java@v2
       #   with:
       #     java-version: '11'
-
-      # - name: Debug file structure (for troubleshooting)
-      #   run: |
-      #     echo "Printing the file structure..."
-      #     pwd  # Print working directory
-      #     ls -la  # List files to confirm HelloWorld.java exists
 
       # - name: Compile Java program
       #   run: |
@@ -31,51 +26,12 @@ jobs:
       #     echo "Running the Java program..."
       #     java HelloWorld
 
-      - name: java
-        run: echo "Hello Rohan..."
-
-  # notify:
-  # runs-on: ubuntu-latest
-  # needs: java-build  # This makes sure `notify` runs after `java-build`
-
-  # steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
-
-  #   - name: Send Email notification
-  #     run: |
-  #       # Check the status of the previous step (java-build) and set the status accordingly
-  #       if [[ ${{ needs.java-build.result }} == 'success' ]]; then
-  #         STATUS="success"
-  #       else
-  #         STATUS="failure"
-  #       fi
-
-  #       # Define the subject and message
-  #       SUBJECT="GitHub Workflow $STATUS"
-  #       MESSAGE="The workflow has $STATUS. Please check the logs."
-        
-  #       if [[ "$STATUS" == "success" ]]; then
-  #         MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
-  #       fi
-
-  #       # Send email using SMTP (Gmail)
-  #       curl --url "smtp://smtp.gmail.com:587" \
-  #         --ssl-reqd \
-  #         --mail-from "${{ secrets.SMTP_USERNAME }}" \
-  #         --mail-rcpt "${{ secrets.SMTP_TO_EMAIL }}" \
-  #         --upload-file <(echo -e "From: ${{ secrets.SMTP_USERNAME }}\nTo: ${{ secrets.SMTP_TO_EMAIL }}\nSubject: $SUBJECT\n\n$MESSAGE") \
-  #         --user "${{ secrets.SMTP_USERNAME }}:${{ secrets.SMTP_PASSWORD }}"
-
-
-
-
-
-
+      - name: Dummy Java Task
+        run: echo "Hello from the Java Build step!"
 
   notify:
     runs-on: ubuntu-latest
-    needs: java-build  # This makes sure `notify` runs after `java-build`
+    needs: java-build  # This ensures `notify` runs after `java-build`
 
     steps:
       - name: Checkout code
@@ -83,26 +39,16 @@ jobs:
 
       - name: Send Email notification
         run: |
-          STATUS=$(if [[ $? -eq 0 ]]; then echo "success"; else echo "failure"; fi)
-          SUBJECT="GitHub Workflow $STATUS"
-          MESSAGE="The workflow has $STATUS. Please check the logs."
-        
-          if [[ "$STATUS" == "success" ]]; then
-            MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
+          # Determine the status of the previous job (`java-build`)
+          if [[ "${{ needs.java-build.result }}" == 'success' ]]; then
+            STATUS="success"
+          else
+            STATUS="failure"
           fi
 
-      # - name: Send Email notification
-      #   run: |
-      #     # Check the status of the previous step (java-build) and set the status accordingly
-      #     if [[ ${{ needs.java-build.result }} == 'success' ]]; then
-      #       STATUS="success"
-      #     else
-      #       STATUS="failure"
-      #     fi
-
-          # Define the subject and message
-          SUBJECT="GitHub Workflow $STATUS"
-          MESSAGE="The workflow has $STATUS. Please check the logs."
+          # Define the subject and body of the email based on the status
+          SUBJECT="GitHub Workflow Status: $STATUS"
+          MESSAGE="The workflow has completed with a $STATUS status. Please check the logs for details."
           
           if [[ "$STATUS" == "success" ]]; then
             MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
@@ -113,5 +59,5 @@ jobs:
             --ssl-reqd \
             --mail-from "${{ secrets.SMTP_USERNAME }}" \
             --mail-rcpt "${{ secrets.SMTP_TO_EMAIL }}" \
-            --upload-file <(echo -e "From: ${SMTP_USERNAME}\nTo: ${SMTP_TO_EMAIL}\nSubject: $SUBJECT\n\n$MESSAGE") \
+            --upload-file <(echo -e "From: ${{ secrets.SMTP_USERNAME }}\nTo: ${{ secrets.SMTP_TO_EMAIL }}\nSubject: $SUBJECT\n\n$MESSAGE") \
             --user "${{ secrets.SMTP_USERNAME }}:${{ secrets.SMTP_PASSWORD }}"
