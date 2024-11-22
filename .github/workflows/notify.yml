@@ -34,6 +34,45 @@ jobs:
       - name: java
         run: echo "Hello Rohan..."
 
+  # notify:
+  # runs-on: ubuntu-latest
+  # needs: java-build  # This makes sure `notify` runs after `java-build`
+
+  # steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Send Email notification
+  #     run: |
+  #       # Check the status of the previous step (java-build) and set the status accordingly
+  #       if [[ ${{ needs.java-build.result }} == 'success' ]]; then
+  #         STATUS="success"
+  #       else
+  #         STATUS="failure"
+  #       fi
+
+  #       # Define the subject and message
+  #       SUBJECT="GitHub Workflow $STATUS"
+  #       MESSAGE="The workflow has $STATUS. Please check the logs."
+        
+  #       if [[ "$STATUS" == "success" ]]; then
+  #         MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
+  #       fi
+
+  #       # Send email using SMTP (Gmail)
+  #       curl --url "smtp://smtp.gmail.com:587" \
+  #         --ssl-reqd \
+  #         --mail-from "${{ secrets.SMTP_USERNAME }}" \
+  #         --mail-rcpt "${{ secrets.SMTP_TO_EMAIL }}" \
+  #         --upload-file <(echo -e "From: ${{ secrets.SMTP_USERNAME }}\nTo: ${{ secrets.SMTP_TO_EMAIL }}\nSubject: $SUBJECT\n\n$MESSAGE") \
+  #         --user "${{ secrets.SMTP_USERNAME }}:${{ secrets.SMTP_PASSWORD }}"
+
+
+
+
+
+
+
   notify:
     runs-on: ubuntu-latest
     needs: java-build  # This makes sure `notify` runs after `java-build`
@@ -44,12 +83,22 @@ jobs:
 
       - name: Send Email notification
         run: |
-          # Check the status of the previous step (java-build) and set the status accordingly
-          if [[ ${{ needs.java-build.result }} == 'success' ]]; then
-            STATUS="success"
-          else
-            STATUS="failure"
+          STATUS=$(if [[ $? -eq 0 ]]; then echo "success"; else echo "failure"; fi)
+          SUBJECT="GitHub Workflow $STATUS"
+          MESSAGE="The workflow has $STATUS. Please check the logs."
+        
+          if [[ "$STATUS" == "success" ]]; then
+            MESSAGE="The Java program built and ran successfully, and the workflow completed successfully!"
           fi
+
+      # - name: Send Email notification
+      #   run: |
+      #     # Check the status of the previous step (java-build) and set the status accordingly
+      #     if [[ ${{ needs.java-build.result }} == 'success' ]]; then
+      #       STATUS="success"
+      #     else
+      #       STATUS="failure"
+      #     fi
 
           # Define the subject and message
           SUBJECT="GitHub Workflow $STATUS"
