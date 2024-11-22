@@ -53,9 +53,9 @@ jobs:
           fi
 
           # Send email using SMTP (Gmail)
-          curl --url "smtp://${{ secrets.SMTP_HOST }}:${{ secrets.SMTP_PORT }}" \
+          curl --url "smtp://smtp.gmail.com:587" \
             --ssl-reqd \
-            --mail-from "${{ secrets.SMTP_USERNAME }}" \
-            --mail-rcpt "${{ secrets.SMTP_TO_EMAIL }}" \
+            --mail-from "${SMTP_USERNAME}" \
+            --mail-rcpt "${SMTP_TO_EMAIL}" \
             --upload-file <(echo -e "From: ${SMTP_USERNAME}\nTo: ${SMTP_TO_EMAIL}\nSubject: $SUBJECT\n\n$MESSAGE") \
-            --user "${{ secrets.SMTP_USERNAME }}:${{ secrets.SMTP_PASSWORD }}"
+            --user "${SMTP_USERNAME}:${SMTP_PASSWORD}"
