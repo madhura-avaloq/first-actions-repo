@@ -53,7 +53,7 @@ jobs:
           # Send email using SMTP (Gmail)
           curl --url "smtp://smtp.gmail.com:587" \
             --ssl-reqd \
-            --mail-from "${{ secrets.SMTP_USERNAME }}" \
+            --mail-from "${{ secrets.SMTP_USERNAME }}" \ 
             --mail-rcpt "${{ secrets.SMTP_TO_EMAIL }}" \
             --upload-file <(echo -e "From: ${{ secrets.SMTP_USERNAME }}\nTo: ${{ secrets.SMTP_TO_EMAIL }}\nSubject: $SUBJECT\n\n$MESSAGE") \
             --user "${{ secrets.SMTP_USERNAME }}:${{ secrets.SMTP_PASSWORD }}"
